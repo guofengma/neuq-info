@@ -56,9 +56,6 @@ public class GpaService extends BaseService {
         Long userId = sessionUtils.getUserId();
         User user = userDAO.selectByPrimaryKey(userId);
         UserJwInfo userJwInfo = jwUserDAO.getInfoByUserId(userId);
-        if (userJwInfo.getIsJwAuth().equals(CommonConstant.USER_JW_AUTH_NOT_PASS)) {
-            return Response.error(ResponseMessageEnum.JW_NOT_AUTH_PASS);
-        }
         String res = null;
         try {
             RestTemplate client = new RestTemplate();

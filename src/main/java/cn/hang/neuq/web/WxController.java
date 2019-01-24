@@ -21,6 +21,7 @@ public class WxController {
 
     @GetMapping("/login")
     public Response login(@RequestParam(required = true, value = "code") String wxCode) {
+        log.info("/wx/login code:{}", wxCode);
         return wxService.getWxSession(wxCode);
     }
 

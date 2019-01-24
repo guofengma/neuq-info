@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static cn.hang.neuq.constant.CommonConstant.USER_JW_AUTH_NOT_PASS;
 import static cn.hang.neuq.constant.CommonConstant.USER_STATUS_NORMAL;
@@ -80,7 +81,9 @@ public class WxService {
             jwInfo.setIsJwAuth(CommonConstant.USER_JW_AUTH_NOT_PASS);
             jwUserDAO.insertSelective(jwInfo);
         }
-        redisTemplate.opsForValue().set(CacheConstant.ACCESS_TOKEN + accessToken, code2SessionDTO.getOpenid() + "#" + code2SessionDTO.getSessionKey() + "#" + user.getId());
+        redisTemplate.opsForValue().set(String.format(CacheConstant.ACCESS_TOKEN, accessToken), code2SessionDTO.getOpenid() + "#" + code2SessionDTO.getSessionKey() + "#" + user.getId());
+        redisTemplate.expire(String.format(CacheConstant.ACCESS_TOKEN, accessToken), 48, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set(String.format(CacheConstant.USER_ACCESS_TOKEN, user.getId()), accessToken);
         return Response.success(accessToken);
     }
 

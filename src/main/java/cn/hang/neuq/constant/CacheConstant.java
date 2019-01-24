@@ -9,5 +9,6 @@ public class CacheConstant {
     private CacheConstant() {
         throw new IllegalStateException("Utility class");
     }
-    public static final String ACCESS_TOKEN = "info_access_token:";
+    public static final String ACCESS_TOKEN = "info_access_token:%s";
+    public static final String USER_ACCESS_TOKEN = "info_user_access_token:%s";
 }
