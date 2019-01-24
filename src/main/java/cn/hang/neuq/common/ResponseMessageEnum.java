@@ -15,8 +15,7 @@ public enum ResponseMessageEnum implements ResponseMessageInterface {
     ACCESS_TOKEN_NOT_EXIST(402, "accessToken过期"),
     ACCESS_TOKEN_INVALID(403, "accessToken无效"),
     ERROR(500, "操作失败"),
-    NETWORK_ERROR(501, "服务器开小差了"),
-    JW_NETWORK_ERROR(502, "服务器开小差了")
+    NETWORK_ERROR(501, "服务器开小差了")
     ;
 
     private int code;

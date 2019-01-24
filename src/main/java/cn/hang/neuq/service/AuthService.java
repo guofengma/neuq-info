@@ -3,6 +3,7 @@ package cn.hang.neuq.service;
 import cn.hang.neuq.base.BaseService;
 import cn.hang.neuq.common.Response;
 import cn.hang.neuq.common.ResponseMessageEnum;
+import cn.hang.neuq.constant.ApiConstant;
 import cn.hang.neuq.constant.CommonConstant;
 import cn.hang.neuq.constant.InfoProperties;
 import cn.hang.neuq.dao.JwUserDAO;
@@ -11,6 +12,8 @@ import cn.hang.neuq.entity.po.UserJwInfo;
 import cn.hang.neuq.entity.vo.JwAuthVO;
 import cn.hang.neuq.entity.vo.UserJwInfoVO;
 import cn.hang.neuq.exception.InfoException;
+import cn.hang.neuq.exception.JwNotAuthException;
+import cn.hang.neuq.util.HttpUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -27,6 +30,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
+import static cn.hang.neuq.common.ResponseMessageEnum.JW_NOT_AUTH_PASS;
+
 /**
  * @author lihang15
  * @description
@@ -40,6 +45,9 @@ public class AuthService extends BaseService {
 
     @Autowired
     private JwUserDAO jwUserDAO;
+
+    @Autowired
+    private HttpUtils httpUtils;
 
     @Autowired
     public AuthService(InfoProperties infoProperties) {
@@ -67,10 +75,8 @@ public class AuthService extends BaseService {
         log.info("jwxt auth res userId={},res={}", userId, result);
         JwApiResDTO<AuthRes> jwApiResDTO = JSON.parseObject(result, new TypeReference<JwApiResDTO<AuthRes>>() {
         });
-        if (jwApiResDTO != null && jwApiResDTO.getCode().equals(CommonConstant.JW_NETWORK_ERROR_CODE)) {
-            throw new InfoException("教务系统繁忙");
-        }
-        if (jwApiResDTO != null && jwApiResDTO.getCode() == 0) {
+        httpUtils.handleJwResponse(jwApiResDTO);
+        if (jwApiResDTO != null && jwApiResDTO.getCode() != null && jwApiResDTO.getCode() == 0) {
             UserJwInfo userJwInfo = new UserJwInfo();
             userJwInfo.setUserId(userId);
             userJwInfo.setIsJwAuth(CommonConstant.USER_JW_AUTH_PASS);
@@ -88,13 +94,16 @@ public class AuthService extends BaseService {
             BeanUtils.copyProperties(userJwInfo, userJwInfoVO);
             return Response.success(userJwInfoVO);
         } else {
-            UserJwInfo userJwInfo = new UserJwInfo();
-            userJwInfo.setUserId(userId);
-            userJwInfo.setIsJwAuth(CommonConstant.USER_JW_AUTH_NOT_PASS);
-            userJwInfo.setJwPassword("");
-            jwUserDAO.updateByUserId(userJwInfo);
-            return Response.error("教务系统认证失败");
+            return jwNotAuthResponse(userId);
         }
+    }
+
+    public Response jwNotAuthResponse(long userId) {
+        UserJwInfo userJwInfo = new UserJwInfo();
+        userJwInfo.setUserId(userId);
+        userJwInfo.setIsJwAuth(CommonConstant.USER_JW_AUTH_NOT_PASS);
+        jwUserDAO.updateByUserId(userJwInfo);
+        throw new JwNotAuthException();
     }
 
     @Data

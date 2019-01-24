@@ -35,6 +35,5 @@ public class CommonConstant {
      */
     public static final Integer USER_JW_AUTH_NOT_PASS = -1;
 
-    public static final Integer JW_NETWORK_ERROR_CODE = 400;
 
 }

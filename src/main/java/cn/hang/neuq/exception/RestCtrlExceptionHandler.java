@@ -35,6 +35,12 @@ public class RestCtrlExceptionHandler {
         return Response.error(ResponseMessageEnum.ACCESS_TOKEN_INVALID);
     }
 
+    @ExceptionHandler(JwNotAuthException.class)
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<Object> handleJwNotAuthException(JwNotAuthException e) {
+        return Response.error(ResponseMessageEnum.JW_NOT_AUTH_PASS);
+    }
+
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(value = HttpStatus.OK)
     public Response<Object> handleTokenExpiredException(TokenExpiredException e) {
