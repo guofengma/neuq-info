@@ -71,13 +71,16 @@ public class GpaService extends BaseService {
         float creditTotal = 0;
         for (Gpa gpa : gpaList) {
             creditTotal += gpa.getCredit();
-            gpaTotal += gpa.getGpa() * gpa.getCredit();
+            if (gpa.getGpa() != null && gpa.getCredit() != null) {
+                gpaTotal += gpa.getGpa() * gpa.getCredit();
+            }
             gpa.setUserId(user.getId());
             Gpa oldGpa = gpaDao.getGpaByUserIdAndCourseIdAndExamType(userId, gpa.getCourseId(), gpa.getExamType());
             if (oldGpa == null) {
                 gpa.setClassId(userJwInfo.getClassId());
                 gpaDao.insertSelective(gpa);
             } else {
+                gpa.setClassId(userJwInfo.getClassId());
                 oldGpa.setScore(gpa.getScore());
                 oldGpa.setGpa(gpa.getGpa());
                 oldGpa.setCredit(gpa.getCredit());
