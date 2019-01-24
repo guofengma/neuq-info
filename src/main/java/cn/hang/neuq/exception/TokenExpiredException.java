@@ -4,14 +4,14 @@ package cn.hang.neuq.exception;
 /**
  * @author lihang15
  */
-public class TokenInvalidException extends RuntimeException {
+public class TokenExpiredException extends RuntimeException {
 
     private String msg;
 
-    public TokenInvalidException() {
+    public TokenExpiredException() {
         super();
     }
-    public TokenInvalidException(String msg) {
+    public TokenExpiredException(String msg) {
         super(msg);
         this.msg = msg;
     }

@@ -32,13 +32,15 @@ public class RestCtrlExceptionHandler {
     @ExceptionHandler(TokenInvalidException.class)
     @ResponseStatus(value = HttpStatus.OK)
     public Response<Object> handleTokenInvalidException(TokenInvalidException e) {
-        if (e != null) {
-            if (StringUtils.isNotBlank(e.getMessage())) {
-                return Response.error(ResponseMessageEnum.ACCESS_TOKEN_NOT_EXIST);
-            }
-        }
-        return Response.error();
+        return Response.error(ResponseMessageEnum.ACCESS_TOKEN_INVALID);
     }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<Object> handleTokenExpiredException(TokenExpiredException e) {
+        return Response.error(ResponseMessageEnum.ACCESS_TOKEN_NOT_EXIST);
+    }
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.OK)

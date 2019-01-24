@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  **/
 @Component
 public class SessionInterceptor implements HandlerInterceptor {
+
     @Autowired
     private SessionUtils sessionUtils;
 

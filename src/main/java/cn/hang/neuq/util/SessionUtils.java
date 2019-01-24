@@ -6,6 +6,7 @@ import cn.hang.neuq.dao.JwUserDAO;
 import cn.hang.neuq.dao.UserDAO;
 import cn.hang.neuq.entity.po.UserJwInfo;
 import cn.hang.neuq.exception.InfoException;
+import cn.hang.neuq.exception.TokenExpiredException;
 import cn.hang.neuq.exception.TokenInvalidException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,52 +37,23 @@ public class SessionUtils {
     }
 
     public String getOpenId() {
-        String accessToken = currentRequest().getHeader(SecurityConstant.HEADER);
-        if (StringUtils.isBlank(accessToken)) {
-            throw new TokenInvalidException("accessToken为空");
-        }
-        String value = redisTemplate.opsForValue().get(String.format(CacheConstant.ACCESS_TOKEN, accessToken));
-        String[] array = new String[0];
-        if (value != null) {
-            array = value.split("#");
-        }
-        if (array.length == 3) {
-            return array[0];
-        }
-        return "";
-
+        String[] array = this.getTokenArray();
+        return array[0];
     }
 
+
     public String getSessionKey() {
-        String accessToken = currentRequest().getHeader(SecurityConstant.HEADER);
-        if (StringUtils.isBlank(accessToken)) {
-            throw new TokenInvalidException("accessToken为空");
-        }
-        String value = redisTemplate.opsForValue().get(String.format(CacheConstant.ACCESS_TOKEN, accessToken));
-        String[] array = new String[0];
-        if (value != null) {
-            array = value.split("#");
-        }
-        if (array.length == 3) {
-            return array[1];
-        }
-        return "";
+        String[] array = this.getTokenArray();
+        return array[1];
     }
 
     public Long getUserId() {
-        String accessToken = currentRequest().getHeader(SecurityConstant.HEADER);
-        if (StringUtils.isBlank(accessToken)) {
-            throw new TokenInvalidException("accessToken为空");
-        }
-        String value = redisTemplate.opsForValue().get(String.format(CacheConstant.ACCESS_TOKEN, accessToken));
-        String[] array = new String[0];
-        if (value != null) {
-            array = value.split("#");
-        }
-        if (array.length == 3) {
+        String[] array = this.getTokenArray();
+        if (array[2] != null) {
             return Long.parseLong(array[2]);
+        } else {
+            throw new TokenInvalidException();
         }
-        return null;
     }
 
     public UserJwInfo getJwUser() {
@@ -89,6 +61,22 @@ public class SessionUtils {
         return jwUserDAO.getInfoByUserId(userId);
     }
 
+    private String[] getTokenArray() {
+        String accessToken = currentRequest().getHeader(SecurityConstant.HEADER);
+        if (StringUtils.isBlank(accessToken)) {
+            throw new TokenExpiredException();
+        }
+        String value = redisTemplate.opsForValue().get(String.format(CacheConstant.ACCESS_TOKEN, accessToken));
+        String[] array = new String[0];
+        if (value != null) {
+            array = value.split("#");
+        }
+        if (array.length == 3) {
+            return array;
+        } else {
+            throw new TokenInvalidException();
+        }
+    }
 
 
 }
