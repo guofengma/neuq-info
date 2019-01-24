@@ -27,6 +27,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Response login(@RequestBody JwAuthVO jwAuthVO) {
+        log.info("auth/login params{}", jwAuthVO);
         return authService.login(jwAuthVO);
     }
 
