@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hang.neuq.mapper.GpaMapper">
+  <resultMap id="BaseResultMap" type="cn.hang.neuq.entity.po.Gpa">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_Id" jdbcType="BIGINT" property="userId" />
+    <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+    <result column="course_id" jdbcType="VARCHAR" property="courseId" />
+    <result column="score" jdbcType="VARCHAR" property="score" />
+    <result column="gpa" jdbcType="REAL" property="gpa" />
+    <result column="credit" jdbcType="REAL" property="credit" />
+    <result column="class_id" jdbcType="VARCHAR" property="classId" />
+    <result column="semester" jdbcType="VARCHAR" property="semester" />
+    <result column="exam_type" jdbcType="VARCHAR" property="examType" />
+    <result column="is_exam_invalid" jdbcType="VARCHAR" property="isExamInvalid" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_Id, course_name, course_id, score, gpa, credit, class_id, semester, exam_type, 
+    is_exam_invalid, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByExample" parameterType="cn.hang.neuq.entity.po.GpaExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from gpa
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gpa
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from gpa
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.hang.neuq.entity.po.GpaExample">
+    delete from gpa
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.hang.neuq.entity.po.Gpa">
+    insert into gpa (id, user_Id, course_name, 
+      course_id, score, gpa, 
+      credit, class_id, semester, 
+      exam_type, is_exam_invalid, gmt_create, 
+      gmt_modified)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{courseName,jdbcType=VARCHAR}, 
+      #{courseId,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR}, #{gpa,jdbcType=REAL}, 
+      #{credit,jdbcType=REAL}, #{classId,jdbcType=VARCHAR}, #{semester,jdbcType=VARCHAR}, 
+      #{examType,jdbcType=VARCHAR}, #{isExamInvalid,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.hang.neuq.entity.po.Gpa">
+    insert into gpa
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_Id,
+      </if>
+      <if test="courseName != null">
+        course_name,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="gpa != null">
+        gpa,
+      </if>
+      <if test="credit != null">
+        credit,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="semester != null">
+        semester,
+      </if>
+      <if test="examType != null">
+        exam_type,
+      </if>
+      <if test="isExamInvalid != null">
+        is_exam_invalid,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="courseName != null">
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="gpa != null">
+        #{gpa,jdbcType=REAL},
+      </if>
+      <if test="credit != null">
+        #{credit,jdbcType=REAL},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="semester != null">
+        #{semester,jdbcType=VARCHAR},
+      </if>
+      <if test="examType != null">
+        #{examType,jdbcType=VARCHAR},
+      </if>
+      <if test="isExamInvalid != null">
+        #{isExamInvalid,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.hang.neuq.entity.po.GpaExample" resultType="java.lang.Long">
+    select count(*) from gpa
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update gpa
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null">
+        user_Id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.courseName != null">
+        course_name = #{record.courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseId != null">
+        course_id = #{record.courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.score != null">
+        score = #{record.score,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gpa != null">
+        gpa = #{record.gpa,jdbcType=REAL},
+      </if>
+      <if test="record.credit != null">
+        credit = #{record.credit,jdbcType=REAL},
+      </if>
+      <if test="record.classId != null">
+        class_id = #{record.classId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.semester != null">
+        semester = #{record.semester,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examType != null">
+        exam_type = #{record.examType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isExamInvalid != null">
+        is_exam_invalid = #{record.isExamInvalid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gmtCreate != null">
+        gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.gmtModified != null">
+        gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update gpa
+    set id = #{record.id,jdbcType=BIGINT},
+      user_Id = #{record.userId,jdbcType=BIGINT},
+      course_name = #{record.courseName,jdbcType=VARCHAR},
+      course_id = #{record.courseId,jdbcType=VARCHAR},
+      score = #{record.score,jdbcType=VARCHAR},
+      gpa = #{record.gpa,jdbcType=REAL},
+      credit = #{record.credit,jdbcType=REAL},
+      class_id = #{record.classId,jdbcType=VARCHAR},
+      semester = #{record.semester,jdbcType=VARCHAR},
+      exam_type = #{record.examType,jdbcType=VARCHAR},
+      is_exam_invalid = #{record.isExamInvalid,jdbcType=VARCHAR},
+      gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.hang.neuq.entity.po.Gpa">
+    update gpa
+    <set>
+      <if test="userId != null">
+        user_Id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="courseName != null">
+        course_name = #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="gpa != null">
+        gpa = #{gpa,jdbcType=REAL},
+      </if>
+      <if test="credit != null">
+        credit = #{credit,jdbcType=REAL},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="semester != null">
+        semester = #{semester,jdbcType=VARCHAR},
+      </if>
+      <if test="examType != null">
+        exam_type = #{examType,jdbcType=VARCHAR},
+      </if>
+      <if test="isExamInvalid != null">
+        is_exam_invalid = #{isExamInvalid,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.hang.neuq.entity.po.Gpa">
+    update gpa
+    set user_Id = #{userId,jdbcType=BIGINT},
+      course_name = #{courseName,jdbcType=VARCHAR},
+      course_id = #{courseId,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      gpa = #{gpa,jdbcType=REAL},
+      credit = #{credit,jdbcType=REAL},
+      class_id = #{classId,jdbcType=VARCHAR},
+      semester = #{semester,jdbcType=VARCHAR},
+      exam_type = #{examType,jdbcType=VARCHAR},
+      is_exam_invalid = #{isExamInvalid,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

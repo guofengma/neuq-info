@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: neuq-info-boot
+  profiles:
+    active: @profileActive@
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+server:
+  port: 9000
+#  servlet:
+#    context-path: /info
+  tomcat:
+    basedir: .
+    accesslog:
+      enabled: true
+      directory: ./logs
+      pattern: "%{X-Forwarded-For}i %a %t %m %U %s %b %D"
+      rename-on-rotate: true
+      suffix: .log
+      prefix: access
+      rotate: true
+      buffered: false
+      file-date-format: yyyy-MM-dd

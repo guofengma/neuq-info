@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/neuq_info?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123456
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+logging:
+  level:
+    cn.hang.neuq: debug
+wx:
+  app-id: wx22c990cbb6b3c918
+  secret: 72b40bfb3c49014b3ebadeca83a39485
+  grant-type: authorization_code
+  session-host: https://api.weixin.qq.com/sns/jscode2session
+info-api:
+  gpa-host: http://localhost:7005/api/gpa?username={?}&password={?}
+  auth-host: http://localhost:7005/api/auth
+
+
+
