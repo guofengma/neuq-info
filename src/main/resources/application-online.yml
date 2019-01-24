@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/neuq_info?useUnicode=true&characterEncoding=utf-8
     username: neuq_info
-    password: lihang1333025
+    password: lihang133025
   redis:
     host: 127.0.0.1
     port: 6379
