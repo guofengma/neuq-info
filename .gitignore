@@ -1,5 +1,6 @@
 /target
 info.iml
-/.idea/
+/.idea
 /logs
 /work
+*.iml
