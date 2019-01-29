@@ -1,6 +1,7 @@
 package cn.hang.neuq.util;
 
 import cn.hang.neuq.constant.CacheConstant;
+import cn.hang.neuq.constant.CommonConstant;
 import cn.hang.neuq.constant.SecurityConstant;
 import cn.hang.neuq.dao.JwUserDAO;
 import cn.hang.neuq.dao.UserDAO;
@@ -10,12 +11,15 @@ import cn.hang.neuq.exception.TokenExpiredException;
 import cn.hang.neuq.exception.TokenInvalidException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author lihang15
@@ -24,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @Component
 public class SessionUtils {
+
+    ThreadLocal<UserJwInfo> userJwInfoThreadLocal = new ThreadLocal<>();
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -57,20 +63,28 @@ public class SessionUtils {
     }
 
     public UserJwInfo getJwUser() {
+
+        UserJwInfo userJwInfo = userJwInfoThreadLocal.get();
+        if (userJwInfo != null) {
+            return userJwInfo;
+        }
         Long userId = this.getUserId();
-        return jwUserDAO.getInfoByUserId(userId);
+        userJwInfo = jwUserDAO.getInfoByUserId(userId);
+        userJwInfoThreadLocal.set(userJwInfo);
+        return userJwInfo;
     }
+
 
     private String[] getTokenArray() {
         String accessToken = currentRequest().getHeader(SecurityConstant.HEADER);
         if (StringUtils.isBlank(accessToken)) {
-            throw new TokenExpiredException();
+            throw new TokenInvalidException();
         }
         String value = redisTemplate.opsForValue().get(String.format(CacheConstant.ACCESS_TOKEN, accessToken));
-        String[] array = new String[0];
-        if (value != null) {
-            array = value.split("#");
+        if (StringUtils.isBlank(value)) {
+            throw new TokenExpiredException();
         }
+        String[] array = value.split("#");
         if (array.length == 3) {
             return array;
         } else {

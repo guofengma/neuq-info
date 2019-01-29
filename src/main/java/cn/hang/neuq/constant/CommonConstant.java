@@ -34,6 +34,15 @@ public class CommonConstant {
      * 教务系统验证未通过
      */
     public static final Integer USER_JW_AUTH_NOT_PASS = -1;
+    /**
+     * 数据正常状态
+     */
+    public static final Integer DATA_STATUS_NORMAL = 0;
+
+    /**
+     * 数据删除状态
+     */
+    public static final Integer DATA_STATUS_LOCK = -1;
 
 
 }

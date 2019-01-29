@@ -16,5 +16,7 @@ public class InfoProperties {
 
     private String authHost;
     private String gpaHost;
+    private String queryEmptyRoomHost;
+
 
 }

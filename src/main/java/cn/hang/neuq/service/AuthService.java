@@ -6,14 +6,17 @@ import cn.hang.neuq.common.ResponseMessageEnum;
 import cn.hang.neuq.constant.ApiConstant;
 import cn.hang.neuq.constant.CommonConstant;
 import cn.hang.neuq.constant.InfoProperties;
+import cn.hang.neuq.dao.GpaDAO;
 import cn.hang.neuq.dao.JwUserDAO;
 import cn.hang.neuq.entity.dto.JwApiResDTO;
+import cn.hang.neuq.entity.po.Gpa;
 import cn.hang.neuq.entity.po.UserJwInfo;
 import cn.hang.neuq.entity.vo.JwAuthVO;
 import cn.hang.neuq.entity.vo.UserJwInfoVO;
 import cn.hang.neuq.exception.InfoException;
 import cn.hang.neuq.exception.JwNotAuthException;
 import cn.hang.neuq.util.HttpUtils;
+import cn.hang.neuq.util.SessionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -30,8 +33,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
-import static cn.hang.neuq.common.ResponseMessageEnum.JW_NOT_AUTH_PASS;
-
 /**
  * @author lihang15
  * @description
@@ -45,6 +46,9 @@ public class AuthService extends BaseService {
 
     @Autowired
     private JwUserDAO jwUserDAO;
+
+    @Autowired
+    private GpaDAO gpaDAO;
 
     @Autowired
     private HttpUtils httpUtils;
@@ -75,7 +79,6 @@ public class AuthService extends BaseService {
         log.info("jwxt auth res userId={},res={}", userId, result);
         JwApiResDTO<AuthRes> jwApiResDTO = JSON.parseObject(result, new TypeReference<JwApiResDTO<AuthRes>>() {
         });
-        httpUtils.handleJwResponse(jwApiResDTO);
         if (jwApiResDTO != null && jwApiResDTO.getCode() != null && jwApiResDTO.getCode() == 0) {
             UserJwInfo userJwInfo = new UserJwInfo();
             userJwInfo.setUserId(userId);
@@ -93,17 +96,40 @@ public class AuthService extends BaseService {
             UserJwInfoVO userJwInfoVO = new UserJwInfoVO();
             BeanUtils.copyProperties(userJwInfo, userJwInfoVO);
             return Response.success(userJwInfoVO);
+        } else if (jwApiResDTO != null && jwApiResDTO.getCode() != null && jwApiResDTO.getCode().equals(ApiConstant.JW_NOT_AUTH_PASS_CODE)) {
+            return Response.error("学号密码错误");
         } else {
-            return jwNotAuthResponse(userId);
+            throw new InfoException(ApiConstant.JW_NETWORK_ERROR_MESSAGE);
+
         }
     }
 
-    public Response jwNotAuthResponse(long userId) {
+    public void jwNotAuthHandel(long userId) {
         UserJwInfo userJwInfo = new UserJwInfo();
         userJwInfo.setUserId(userId);
         userJwInfo.setIsJwAuth(CommonConstant.USER_JW_AUTH_NOT_PASS);
         jwUserDAO.updateByUserId(userJwInfo);
         throw new JwNotAuthException();
+    }
+
+    public Response unbind() {
+        Long userId = sessionUtils.getUserId();
+        UserJwInfo userJwInfo = new UserJwInfo();
+        userJwInfo.setUserId(userId);
+        userJwInfo.setIsJwAuth(CommonConstant.USER_JW_AUTH_NOT_PASS);
+        jwUserDAO.updateByUserId(userJwInfo);
+        Gpa gpa = new Gpa();
+        gpa.setStatus(CommonConstant.DATA_STATUS_LOCK);
+        gpa.setUserId(userId);
+        gpaDAO.updateByUserId(gpa);
+        return Response.success();
+    }
+
+    public Response jwUserInfo() {
+        UserJwInfo userJwInfo = sessionUtils.getJwUser();
+        UserJwInfoVO userJwInfoVO = new UserJwInfoVO();
+        BeanUtils.copyProperties(userJwInfo, userJwInfoVO);
+        return Response.success(userJwInfoVO);
     }
 
     @Data

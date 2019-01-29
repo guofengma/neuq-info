@@ -11,6 +11,8 @@ mybatis:
     map-underscore-to-camel-case: true
 server:
   port: 9000
+#  servlet:
+#    context-path: /info
   tomcat:
     basedir: .
     accesslog:

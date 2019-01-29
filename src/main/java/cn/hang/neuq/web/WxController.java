@@ -30,4 +30,9 @@ public class WxController {
         return wxService.decodeUserInfo(decodeUserInfoVO);
     }
 
+    @GetMapping("/checkToken")
+    public Response checkToken() {
+        return Response.success();
+    }
+
 }

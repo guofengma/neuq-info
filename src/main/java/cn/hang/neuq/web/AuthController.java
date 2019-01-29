@@ -31,4 +31,16 @@ public class AuthController {
         return authService.login(jwAuthVO);
     }
 
+    @GetMapping("/unbind")
+    public Response unbind() {
+        log.info("auth/unbind");
+        return authService.unbind();
+    }
+
+    @GetMapping("/jwUserInfo")
+    public Response jwUserInfo() {
+        log.info("auth/jwUserInfo");
+        return authService.jwUserInfo();
+    }
+
 }

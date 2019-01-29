@@ -42,6 +42,8 @@ public class Gpa implements Serializable {
      */
     private String classId;
 
+    private String studentId;
+
     /**
      * 学期
      */
@@ -53,6 +55,8 @@ public class Gpa implements Serializable {
     private String examType;
 
     private String isExamInvalid;
+
+    private Integer status;
 
     private Date gmtCreate;
 
@@ -124,6 +128,14 @@ public class Gpa implements Serializable {
         this.classId = classId;
     }
 
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
     public String getSemester() {
         return semester;
     }
@@ -146,6 +158,14 @@ public class Gpa implements Serializable {
 
     public void setIsExamInvalid(String isExamInvalid) {
         this.isExamInvalid = isExamInvalid;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getGmtCreate() {

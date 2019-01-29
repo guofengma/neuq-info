@@ -29,6 +29,7 @@ public class SessionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         request.setCharacterEncoding("utf-8");
         UserJwInfo userJwInfo = sessionUtils.getJwUser();
+
         if (userJwInfo.getIsJwAuth().equals(CommonConstant.USER_JW_AUTH_NOT_PASS)) {
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().print(JSON.toJSONString(Response.error(ResponseMessageEnum.JW_NOT_AUTH_PASS)));

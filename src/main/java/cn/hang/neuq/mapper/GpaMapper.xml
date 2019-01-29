@@ -10,9 +10,11 @@
     <result column="gpa" jdbcType="REAL" property="gpa" />
     <result column="credit" jdbcType="REAL" property="credit" />
     <result column="class_id" jdbcType="VARCHAR" property="classId" />
+    <result column="student_id" jdbcType="VARCHAR" property="studentId" />
     <result column="semester" jdbcType="VARCHAR" property="semester" />
     <result column="exam_type" jdbcType="VARCHAR" property="examType" />
     <result column="is_exam_invalid" jdbcType="VARCHAR" property="isExamInvalid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
@@ -75,8 +77,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_Id, course_name, course_id, score, gpa, credit, class_id, semester, exam_type, 
-    is_exam_invalid, gmt_create, gmt_modified
+    id, user_Id, course_name, course_id, score, gpa, credit, class_id, student_id, semester, 
+    exam_type, is_exam_invalid, `status`, gmt_create, gmt_modified
   </sql>
   <select id="selectByExample" parameterType="cn.hang.neuq.entity.po.GpaExample" resultMap="BaseResultMap">
     select
@@ -119,14 +121,16 @@
   <insert id="insert" parameterType="cn.hang.neuq.entity.po.Gpa">
     insert into gpa (id, user_Id, course_name, 
       course_id, score, gpa, 
-      credit, class_id, semester, 
-      exam_type, is_exam_invalid, gmt_create, 
-      gmt_modified)
+      credit, class_id, student_id, 
+      semester, exam_type, is_exam_invalid, 
+      `status`, gmt_create, gmt_modified
+      )
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{courseName,jdbcType=VARCHAR}, 
       #{courseId,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR}, #{gpa,jdbcType=REAL}, 
-      #{credit,jdbcType=REAL}, #{classId,jdbcType=VARCHAR}, #{semester,jdbcType=VARCHAR}, 
-      #{examType,jdbcType=VARCHAR}, #{isExamInvalid,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
-      #{gmtModified,jdbcType=TIMESTAMP})
+      #{credit,jdbcType=REAL}, #{classId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, 
+      #{semester,jdbcType=VARCHAR}, #{examType,jdbcType=VARCHAR}, #{isExamInvalid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.hang.neuq.entity.po.Gpa">
     insert into gpa
@@ -155,6 +159,9 @@
       <if test="classId != null">
         class_id,
       </if>
+      <if test="studentId != null">
+        student_id,
+      </if>
       <if test="semester != null">
         semester,
       </if>
@@ -163,6 +170,9 @@
       </if>
       <if test="isExamInvalid != null">
         is_exam_invalid,
+      </if>
+      <if test="status != null">
+        `status`,
       </if>
       <if test="gmtCreate != null">
         gmt_create,
@@ -196,6 +206,9 @@
       <if test="classId != null">
         #{classId,jdbcType=VARCHAR},
       </if>
+      <if test="studentId != null">
+        #{studentId,jdbcType=VARCHAR},
+      </if>
       <if test="semester != null">
         #{semester,jdbcType=VARCHAR},
       </if>
@@ -204,6 +217,9 @@
       </if>
       <if test="isExamInvalid != null">
         #{isExamInvalid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -246,6 +262,9 @@
       <if test="record.classId != null">
         class_id = #{record.classId,jdbcType=VARCHAR},
       </if>
+      <if test="record.studentId != null">
+        student_id = #{record.studentId,jdbcType=VARCHAR},
+      </if>
       <if test="record.semester != null">
         semester = #{record.semester,jdbcType=VARCHAR},
       </if>
@@ -254,6 +273,9 @@
       </if>
       <if test="record.isExamInvalid != null">
         is_exam_invalid = #{record.isExamInvalid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        `status` = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.gmtCreate != null">
         gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
@@ -276,9 +298,11 @@
       gpa = #{record.gpa,jdbcType=REAL},
       credit = #{record.credit,jdbcType=REAL},
       class_id = #{record.classId,jdbcType=VARCHAR},
+      student_id = #{record.studentId,jdbcType=VARCHAR},
       semester = #{record.semester,jdbcType=VARCHAR},
       exam_type = #{record.examType,jdbcType=VARCHAR},
       is_exam_invalid = #{record.isExamInvalid,jdbcType=VARCHAR},
+      `status` = #{record.status,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -309,6 +333,9 @@
       <if test="classId != null">
         class_id = #{classId,jdbcType=VARCHAR},
       </if>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=VARCHAR},
+      </if>
       <if test="semester != null">
         semester = #{semester,jdbcType=VARCHAR},
       </if>
@@ -317,6 +344,9 @@
       </if>
       <if test="isExamInvalid != null">
         is_exam_invalid = #{isExamInvalid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -336,9 +366,11 @@
       gpa = #{gpa,jdbcType=REAL},
       credit = #{credit,jdbcType=REAL},
       class_id = #{classId,jdbcType=VARCHAR},
+      student_id = #{studentId,jdbcType=VARCHAR},
       semester = #{semester,jdbcType=VARCHAR},
       exam_type = #{examType,jdbcType=VARCHAR},
       is_exam_invalid = #{isExamInvalid,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

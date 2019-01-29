@@ -34,7 +34,7 @@ public class AES {
 
     //生成密钥
     public static byte[] generateKey() throws NoSuchAlgorithmException {
-        Security.addProvider(new BouncyCastleProvider());
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         KeyGenerator keyGenerator = KeyGenerator.getInstance(KEY_ALGORITHM);
         keyGenerator.init(128);
         SecretKey key = keyGenerator.generateKey();

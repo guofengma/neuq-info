@@ -1,6 +1,7 @@
 package cn.hang.neuq.dao;
 
 import cn.hang.neuq.base.BaseDao;
+import cn.hang.neuq.constant.CommonConstant;
 import cn.hang.neuq.entity.po.Gpa;
 import cn.hang.neuq.entity.po.GpaExample;
 import cn.hang.neuq.entity.po.User;
@@ -31,7 +32,7 @@ public class GpaDAO extends BaseDao<Gpa, Long, GpaExample> {
     public Gpa getGpaByUserIdAndCourseIdAndExamType(Long userId, String courseId, String examType) {
         GpaExample gpaExample = new GpaExample();
         GpaExample.Criteria criteria = gpaExample.createCriteria();
-        criteria.andUserIdEqualTo(userId).andCourseIdEqualTo(courseId).andExamTypeEqualTo(examType);
+        criteria.andUserIdEqualTo(userId).andCourseIdEqualTo(courseId).andExamTypeEqualTo(examType).andStatusEqualTo(CommonConstant.DATA_STATUS_NORMAL);
         List<Gpa> gpaList = gpaMapper.selectByExample(gpaExample);
         if (gpaList.size() == 1) {
             return gpaList.get(0);
@@ -39,10 +40,17 @@ public class GpaDAO extends BaseDao<Gpa, Long, GpaExample> {
         return null;
     }
 
-    public List<Gpa> listBySemester(String semester,Long userId) {
+    public List<Gpa> listBySemester(String semester, Long userId) {
         GpaExample gpaExample = new GpaExample();
         GpaExample.Criteria criteria = gpaExample.createCriteria();
-        criteria.andSemesterEqualTo(semester).andUserIdEqualTo(userId);
+        criteria.andSemesterEqualTo(semester).andUserIdEqualTo(userId).andStatusEqualTo(CommonConstant.DATA_STATUS_NORMAL);
         return gpaMapper.selectByExample(gpaExample);
+    }
+
+    public int updateByUserId(Gpa gpa) {
+        GpaExample gpaExample = new GpaExample();
+        GpaExample.Criteria criteria = gpaExample.createCriteria();
+        criteria.andUserIdEqualTo(gpa.getUserId());
+        return gpaMapper.updateByExampleSelective(gpa, gpaExample);
     }
 }

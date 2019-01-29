@@ -13,6 +13,8 @@ import cn.hang.neuq.entity.dto.JwApiResDTO;
 import cn.hang.neuq.entity.po.Gpa;
 import cn.hang.neuq.entity.po.User;
 import cn.hang.neuq.entity.po.UserJwInfo;
+import cn.hang.neuq.entity.vo.SemesterGpaVO;
+import cn.hang.neuq.entity.vo.UserJwInfoVO;
 import cn.hang.neuq.exception.InfoException;
 import cn.hang.neuq.util.HttpUtils;
 import cn.hang.neuq.util.SessionUtils;
@@ -21,6 +23,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -41,7 +44,8 @@ import static cn.hang.neuq.common.ResponseMessageEnum.JW_NOT_AUTH_PASS;
 @Service
 @Slf4j
 public class GpaService extends BaseService {
-    private final AuthService authService;
+
+
     private final UserDAO userDAO;
 
     private final GpaDAO gpaDao;
@@ -50,22 +54,19 @@ public class GpaService extends BaseService {
 
     private final InfoProperties infoProperties;
 
-    @Autowired
-    private HttpUtils httpUtils;
 
     @Autowired
-    public GpaService(UserDAO userDAO, InfoProperties infoProperties, GpaDAO gpaDao, JwUserDAO jwUserDAO, AuthService authService) {
+    public GpaService(UserDAO userDAO, InfoProperties infoProperties, GpaDAO gpaDao, JwUserDAO jwUserDAO) {
         this.userDAO = userDAO;
         this.infoProperties = infoProperties;
         this.gpaDao = gpaDao;
         this.jwUserDAO = jwUserDAO;
-        this.authService = authService;
     }
 
     public Response refresh() {
         Long userId = sessionUtils.getUserId();
         User user = userDAO.selectByPrimaryKey(userId);
-        UserJwInfo userJwInfo = jwUserDAO.getInfoByUserId(userId);
+        UserJwInfo userJwInfo = sessionUtils.getJwUser();
         String res = null;
         try {
             RestTemplate client = new RestTemplate();
@@ -74,10 +75,10 @@ public class GpaService extends BaseService {
             log.error("network error", e);
             return Response.error(ResponseMessageEnum.NETWORK_ERROR);
         }
-        log.info("jwxt get gpa res userId={},res={}", userId, res);
         JwApiResDTO<List<Gpa>> jwApiResDTO = JSON.parseObject(res, new TypeReference<JwApiResDTO<List<Gpa>>>() {
         });
         httpUtils.handleJwResponse(jwApiResDTO);
+        log.info("jwxt get gpa success userId={}", userId);
 
         List<Gpa> gpaList = jwApiResDTO != null ? jwApiResDTO.getData() : Collections.emptyList();
         float gpaTotal = 0;
@@ -91,9 +92,12 @@ public class GpaService extends BaseService {
             Gpa oldGpa = gpaDao.getGpaByUserIdAndCourseIdAndExamType(userId, gpa.getCourseId(), gpa.getExamType());
             if (oldGpa == null) {
                 gpa.setClassId(userJwInfo.getClassId());
+                gpa.setStudentId(userJwInfo.getStudentId());
+                gpa.setStatus(CommonConstant.DATA_STATUS_NORMAL);
                 gpaDao.insertSelective(gpa);
             } else {
                 gpa.setClassId(userJwInfo.getClassId());
+                oldGpa.setStudentId(userJwInfo.getStudentId());
                 oldGpa.setScore(gpa.getScore());
                 oldGpa.setGpa(gpa.getGpa());
                 oldGpa.setCredit(gpa.getCredit());
@@ -107,12 +111,17 @@ public class GpaService extends BaseService {
             float weightAverageGpa = (float) Math.round((gpaTotal / creditTotal * 10000)) / 10000;
             jwUserDAO.updateByPrimaryKeySelective(new UserJwInfo(userJwInfo.getId(), weightAverageGpa));
         }
-
-        return Response.success(gpaList);
+        return Response.success();
     }
 
-    public Response<List<Gpa>> list(String semester) {
+    public Response<SemesterGpaVO> list(String semester) {
         List<Gpa> gpaList = gpaDao.listBySemester(semester, sessionUtils.getUserId());
-        return Response.success(gpaList);
+        UserJwInfo userJwInfo = sessionUtils.getJwUser();
+        UserJwInfoVO userJwInfoVO = new UserJwInfoVO();
+        BeanUtils.copyProperties(userJwInfo, userJwInfoVO);
+        SemesterGpaVO semesterGpaVO = new SemesterGpaVO();
+        semesterGpaVO.setGpaList(gpaList);
+        semesterGpaVO.setJwUserInfo(userJwInfoVO);
+        return Response.success(semesterGpaVO);
     }
 }

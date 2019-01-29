@@ -120,6 +120,7 @@ public class WxService {
             user.setNickName(wxUserInfoDTO.getNickName());
             user.setProvince(wxUserInfoDTO.getProvince());
             user.setUnionId(wxUserInfoDTO.getUnionId());
+            user.setGmtCreate(new Date());
             userDAO.insertSelective(user);
         } else {
             user.setNickName(wxUserInfoDTO.getNickName());
@@ -129,7 +130,8 @@ public class WxService {
             user.setGender(wxUserInfoDTO.getGender());
             user.setProvince(wxUserInfoDTO.getProvince());
             user.setUnionId(wxUserInfoDTO.getUnionId());
-            userDAO.updateByPrimaryKey(user);
+            user.setGmtModified(new Date());
+            userDAO.updateByPrimaryKeySelective(user);
         }
         return user;
     }

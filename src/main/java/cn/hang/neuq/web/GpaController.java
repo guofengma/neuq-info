@@ -2,6 +2,7 @@ package cn.hang.neuq.web;
 
 import cn.hang.neuq.common.Response;
 import cn.hang.neuq.entity.po.Gpa;
+import cn.hang.neuq.entity.vo.SemesterGpaVO;
 import cn.hang.neuq.service.GpaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class GpaController {
     }
 
     @GetMapping("/list")
-    public Response<List<Gpa>> list(@RequestParam String semester) {
+    public Response<SemesterGpaVO> list(@RequestParam String semester) {
         return gpaService.list(semester);
     }
 

@@ -27,7 +27,7 @@ public class HttpUtils {
             throw new InfoException(ApiConstant.JW_NETWORK_ERROR_MESSAGE);
         }
         if (jwApiResDTO.getCode() != null && jwApiResDTO.getCode().equals(ApiConstant.JW_NOT_AUTH_PASS_CODE)) {
-            authService.jwNotAuthResponse(sessionUtils.getUserId());
+            authService.jwNotAuthHandel(sessionUtils.getUserId());
         }
         if (jwApiResDTO.getCode() != null && !jwApiResDTO.getCode().equals(ApiConstant.JW_SUCCESS)) {
             throw new InfoException(ApiConstant.JW_NETWORK_ERROR_MESSAGE);

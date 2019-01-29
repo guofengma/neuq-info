@@ -25,6 +25,7 @@ public class MyWebAppConfigurer extends WebMvcConfigurationSupport {
         registry.addInterceptor(sessionInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/wx/login")
+                .excludePathPatterns("/wx/decodeUserInfo")
                 .excludePathPatterns("/auth/login");
         super.addInterceptors(registry);
     }

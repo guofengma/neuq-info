@@ -15,7 +15,7 @@ Swagger Restful Api [接口介绍地址](https://info.hhml.online/info/api/index
 - [x] 绑定教务系统（用教务处账号密码认证）
 - [x] 刷新教务处成绩（包括加权平均绩点）
 - [x] 按学期查询成绩
-- [ ] 空闲教室查询
+- [x] 空闲教室查询
 #### 校园卡相关
 - [ ] 校园卡余额
 

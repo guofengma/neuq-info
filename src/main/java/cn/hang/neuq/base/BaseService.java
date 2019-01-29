@@ -1,5 +1,6 @@
 package cn.hang.neuq.base;
 
+import cn.hang.neuq.util.HttpUtils;
 import cn.hang.neuq.util.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,5 +14,8 @@ import org.springframework.stereotype.Service;
 public class BaseService {
     @Autowired
     protected SessionUtils sessionUtils;
+
+    @Autowired
+    protected HttpUtils httpUtils;
 
 }

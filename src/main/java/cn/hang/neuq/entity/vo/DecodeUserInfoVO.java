@@ -12,6 +12,5 @@ public class DecodeUserInfoVO {
 
     private String encryptedData;
     private String iv;
-    private String openId;
 
 }
